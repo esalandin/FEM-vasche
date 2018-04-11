@@ -1,15 +1,15 @@
+% lettura parametri vasche da file Excel
 
-% --------------------------------------------------
-% ultima modifica: 17/10/2017
-% --------------------------------------------------
+% per octave:
+% pkg install C:/Users/sae/Downloads/io-2.4.10.tar.gz
+% pkg load io
 
 clear all
 close all
-clc
 
 % global keepvalue keepvalue2
 
-[n,t,r]=xlsread('Input_vasca_CR.xlsx');
+[n,t,r]=xlsread('Input_vasca.xlsx');
 headers=r(1,:);
 righe_lette=r(:,1);
 
