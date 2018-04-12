@@ -6,45 +6,46 @@ function out= parametri_vasche_xcl(v1,v2)
 % mat,    path,  descr, rho_l,  apg_type,apg_pos,ad_nd_x,ad_nd_z
 
 % i parametri 17 e 18 (apg_type,apg_pos) non vengono letti dal fogliio excel.
+% l'operatore {} serve per estrarre il contenuto della cella (come {1,1} per una cella 1x1)
 
 out(1)=v2(trova_indice(v1,'Nome'));
-par_struct.nome= v2(trova_indice(v1,'Nome'));
+par_struct.nome= v2(trova_indice(v1,'Nome')) {};
 
 out(2)=v2(trova_indice(v1,'path'));
-par_struct.path= v2(trova_indice(v1,'path'));
+par_struct.path= v2(trova_indice(v1,'path')) {};
 
 out(3)=v2(trova_indice(v1,'descrizione'));
-par_struct.descr= v2(trova_indice(v1,'descrizione'));
+par_struct.descr= v2(trova_indice(v1,'descrizione')) {};
 
 out(4)=v2(trova_indice(v1,'X_vasca [m]'));
-par_struct.L_x= v2(trova_indice(v1,'X_vasca [m]'));
+par_struct.L_x= v2(trova_indice(v1,'X_vasca [m]')) {};
 
 out(5)=v2(trova_indice(v1,'Y_vasca [m]'));
-par_struct.L_y= v2(trova_indice(v1,'Y_vasca [m]'));
+par_struct.L_y= v2(trova_indice(v1,'Y_vasca [m]')) {};
 
 out(6)=v2(trova_indice(v1,'Z_vasca [m]'));
-par_struct.L_z= v2(trova_indice(v1,'Z_vasca [m]'));
+par_struct.L_z= v2(trova_indice(v1,'Z_vasca [m]')) {};
 
 out(7)=v2(trova_indice(v1,'Spessore fondo [m]'));
-par_struct.s_f= v2(trova_indice(v1,'Spessore fondo [m]'));
+par_struct.s_f= v2(trova_indice(v1,'Spessore fondo [m]')) {};
 
 out(8)=v2(trova_indice(v1,'Spessore Pareti [m]'));
-par_struct.s_p= v2(trova_indice(v1,'Spessore Pareti [m]'));
+par_struct.s_p= v2(trova_indice(v1,'Spessore Pareti [m]')) {};
 
 % per sb viene utilizzato lo stesso valore di s_p
 par_struct.sb= par_struct.s_p;
 
 out(9)=v2(trova_indice(v1,'dimensione maggiore tubolare di rinforzo [m]'));
-par_struct.B= v2(trova_indice(v1,'dimensione maggiore tubolare di rinforzo [m]'));
+par_struct.B= v2(trova_indice(v1,'dimensione maggiore tubolare di rinforzo [m]')) {};
 
 out(10)=v2(trova_indice(v1,'dimensione minore tubolare di rinforzo [m]'));
-par_struct.D= v2(trova_indice(v1,'dimensione minore tubolare di rinforzo [m]'));
+par_struct.D= v2(trova_indice(v1,'dimensione minore tubolare di rinforzo [m]')) {};
 
 out(11)=v2(trova_indice(v1,'Spessore tubolare di rinforzo [m]'));
-par_struct.tt= v2(trova_indice(v1,'Spessore tubolare di rinforzo [m]'));
+par_struct.tt= v2(trova_indice(v1,'Spessore tubolare di rinforzo [m]')) {};
 
 out(16)=v2(trova_indice(v1,'densita liquido [kg/m3]'));
-par_struct.rho_l= v2(trova_indice(v1,'densita liquido [kg/m3]'));
+par_struct.rho_l= v2(trova_indice(v1,'densita liquido [kg/m3]')) {};
 
 switch char(v2(trova_indice(v1,'Materiale')))
     case 'Acciaio'
@@ -81,6 +82,8 @@ par_struct.ad_nd_x= abate(v2(trova_indice(v1,'posizioni aggiuntive in x [m]')));
 temp_out(20)=v2(trova_indice(v1,'posizioni aggiuntive in z [m]'));
 out{20}=abate(temp_out(20)); 
 par_struct.ad_nd_z= abate(v2(trova_indice(v1,'posizioni aggiuntive in z [m]')));
+
+keyboard()
 
 end
 
