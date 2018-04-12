@@ -1,6 +1,6 @@
 function out=parametri_vasche_xcl(v1,v2)
 
-out(1)=v2(trova_indice(v1,'Nome '));
+out(1)=v2(trova_indice(v1,'Nome'));
 out(2)=v2(trova_indice(v1,'path'));
 out(3)=v2(trova_indice(v1,'descrizione'));
 out(4)=v2(trova_indice(v1,'X_vasca [m]'));
