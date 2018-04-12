@@ -46,7 +46,7 @@ temp_out(15)=v2(trova_indice(v1,'costole in z [m]'));
 out{15}=abate(temp_out(15)); 
 
 temp_out(19)=v2(trova_indice(v1,'posizioni aggiuntive in x [m]'));
-out{19}=abate(temp_out(15)); 
+out{19}=abate(temp_out(19));
 
 temp_out(20)=v2(trova_indice(v1,'posizioni aggiuntive in z [m]'));
 out{20}=abate(temp_out(20)); 
