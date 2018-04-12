@@ -1,13 +1,8 @@
 function VG(nome,L_x,L_y,L_z,s_f,s_p,sb,B,D,tt,c_x,c_y,c_z,mat,path,descr,rho_l,apg_type,apg_pos,ad_nd_x,ad_nd_z)
-
-% --------------------------------------------------
-% ultima modifica: 17/10/2017
-% --------------------------------------------------
 % File per realizzazione del modello di una vasca galvanica date le
 % dimensioni L (lunghezza), H (altezza), W (profondità), s (spessore del 
 % fondo e delle pareti della vasca), sb (spessore del bordo), Lb (lunghezza
 % del bordo)
-% global keepvalue keepvalue2
 
 % Per compensare il fatto che gli elementi shell vengono creati con i nodi sul piano medio, si "aumentano" 
 % fittiziamente le dimensioni della vasca per avere il reale interno vasca
