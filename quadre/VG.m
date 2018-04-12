@@ -1,8 +1,34 @@
-function VG(nome,L_x,L_y,L_z,s_f,s_p,sb,B,D,tt,c_x,c_y,c_z,mat,path,descr,rho_l,apg_type,apg_pos,ad_nd_x,ad_nd_z)
-% File per realizzazione del modello di una vasca galvanica date le
+function VG(parametri_vasca)
+
+% Realizzazione del modello di una vasca galvanica date le
 % dimensioni L (lunghezza), H (altezza), W (profondità), s (spessore del 
 % fondo e delle pareti della vasca), sb (spessore del bordo), Lb (lunghezza
 % del bordo)
+
+% copio in variabili i parametri dalla struttura che descrive la vasca, solo per leggibilita' del codica
+nome= parametri_vasca.nome;
+L_x= parametri_vasca.L_x;
+L_y= parametri_vasca.L_y;
+L_z= parametri_vasca.L_z;
+s_f= parametri_vasca.s_f;
+s_p= parametri_vasca.s_p;
+sb= parametri_vasca.sb;
+B= parametri_vasca.B;
+D= parametri_vasca.D;
+tt= parametri_vasca.tt;
+c_x= parametri_vasca.c_x;
+c_y= parametri_vasca.c_y;
+c_z= parametri_vasca.c_z;
+mat= parametri_vasca.mat;
+path= parametri_vasca.path;
+descr= parametri_vasca.descr;
+rho_l= parametri_vasca.rho_l;
+ad_nd_x= parametri_vasca.ad_nd_x;
+ad_nd_z= parametri_vasca.ad_nd_z;
+
+% apg_type e apg_pos non vengono letti dal file excel
+apg_type= NaN;
+apg_pos= NaN;
 
 % Per compensare il fatto che gli elementi shell vengono creati con i nodi sul piano medio, si "aumentano" 
 % fittiziamente le dimensioni della vasca per avere il reale interno vasca

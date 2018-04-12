@@ -1,4 +1,4 @@
-function out= parametri_vasche_xcl(v1,v2)
+function par_vasca= parametri_vasche_xcl(riga_nomi,riga_valori)
 
 % par{1},par{4},par{5},par{6},par{7},par{8},par{8},par{9},par{10},par{11},par{13},par{14},par{15},
 % nome,  L_x,   L_y,   L_z,   s_f,   s_p,   sb,    B,     D,      tt,     c_x,    c_y,    c_z,    
@@ -8,85 +8,84 @@ function out= parametri_vasche_xcl(v1,v2)
 % i parametri 17 e 18 (apg_type,apg_pos) non vengono letti dal fogliio excel.
 % l'operatore {} serve per estrarre il contenuto della cella (come {1,1} per una cella 1x1)
 
-out(1)=v2(trova_indice(v1,'Nome'));
-par_struct.nome= v2(trova_indice(v1,'Nome')) {};
+out(1)=riga_valori(trova_indice(riga_nomi,'Nome'));
+par_vasca.nome= riga_valori(trova_indice(riga_nomi,'Nome')) {};
 
-out(2)=v2(trova_indice(v1,'path'));
-par_struct.path= v2(trova_indice(v1,'path')) {};
+out(2)=riga_valori(trova_indice(riga_nomi,'path'));
+par_vasca.path= riga_valori(trova_indice(riga_nomi,'path')) {};
 
-out(3)=v2(trova_indice(v1,'descrizione'));
-par_struct.descr= v2(trova_indice(v1,'descrizione')) {};
+out(3)=riga_valori(trova_indice(riga_nomi,'descrizione'));
+par_vasca.descr= riga_valori(trova_indice(riga_nomi,'descrizione')) {};
 
-out(4)=v2(trova_indice(v1,'X_vasca [m]'));
-par_struct.L_x= v2(trova_indice(v1,'X_vasca [m]')) {};
+out(4)=riga_valori(trova_indice(riga_nomi,'X_vasca [m]'));
+par_vasca.L_x= riga_valori(trova_indice(riga_nomi,'X_vasca [m]')) {};
 
-out(5)=v2(trova_indice(v1,'Y_vasca [m]'));
-par_struct.L_y= v2(trova_indice(v1,'Y_vasca [m]')) {};
+out(5)=riga_valori(trova_indice(riga_nomi,'Y_vasca [m]'));
+par_vasca.L_y= riga_valori(trova_indice(riga_nomi,'Y_vasca [m]')) {};
 
-out(6)=v2(trova_indice(v1,'Z_vasca [m]'));
-par_struct.L_z= v2(trova_indice(v1,'Z_vasca [m]')) {};
+out(6)=riga_valori(trova_indice(riga_nomi,'Z_vasca [m]'));
+par_vasca.L_z= riga_valori(trova_indice(riga_nomi,'Z_vasca [m]')) {};
 
-out(7)=v2(trova_indice(v1,'Spessore fondo [m]'));
-par_struct.s_f= v2(trova_indice(v1,'Spessore fondo [m]')) {};
+out(7)=riga_valori(trova_indice(riga_nomi,'Spessore fondo [m]'));
+par_vasca.s_f= riga_valori(trova_indice(riga_nomi,'Spessore fondo [m]')) {};
 
-out(8)=v2(trova_indice(v1,'Spessore Pareti [m]'));
-par_struct.s_p= v2(trova_indice(v1,'Spessore Pareti [m]')) {};
+out(8)=riga_valori(trova_indice(riga_nomi,'Spessore Pareti [m]'));
+par_vasca.s_p= riga_valori(trova_indice(riga_nomi,'Spessore Pareti [m]')) {};
 
 % per sb viene utilizzato lo stesso valore di s_p
-par_struct.sb= par_struct.s_p;
+par_vasca.sb= par_vasca.s_p;
 
-out(9)=v2(trova_indice(v1,'dimensione maggiore tubolare di rinforzo [m]'));
-par_struct.B= v2(trova_indice(v1,'dimensione maggiore tubolare di rinforzo [m]')) {};
+out(9)=riga_valori(trova_indice(riga_nomi,'dimensione maggiore tubolare di rinforzo [m]'));
+par_vasca.B= riga_valori(trova_indice(riga_nomi,'dimensione maggiore tubolare di rinforzo [m]')) {};
 
-out(10)=v2(trova_indice(v1,'dimensione minore tubolare di rinforzo [m]'));
-par_struct.D= v2(trova_indice(v1,'dimensione minore tubolare di rinforzo [m]')) {};
+out(10)=riga_valori(trova_indice(riga_nomi,'dimensione minore tubolare di rinforzo [m]'));
+par_vasca.D= riga_valori(trova_indice(riga_nomi,'dimensione minore tubolare di rinforzo [m]')) {};
 
-out(11)=v2(trova_indice(v1,'Spessore tubolare di rinforzo [m]'));
-par_struct.tt= v2(trova_indice(v1,'Spessore tubolare di rinforzo [m]')) {};
+out(11)=riga_valori(trova_indice(riga_nomi,'Spessore tubolare di rinforzo [m]'));
+par_vasca.tt= riga_valori(trova_indice(riga_nomi,'Spessore tubolare di rinforzo [m]')) {};
 
-out(16)=v2(trova_indice(v1,'densita liquido [kg/m3]'));
-par_struct.rho_l= v2(trova_indice(v1,'densita liquido [kg/m3]')) {};
+out(16)=riga_valori(trova_indice(riga_nomi,'densita liquido [kg/m3]'));
+par_vasca.rho_l= riga_valori(trova_indice(riga_nomi,'densita liquido [kg/m3]')) {};
 
-switch char(v2(trova_indice(v1,'Materiale')))
+switch char(riga_valori(trova_indice(riga_nomi,'Materiale')))
     case 'Acciaio'
         out{12}=2;    
-        par_struct.mat=2;
+        par_vasca.mat=2;
     case 'PP'
         out{12}=1;   
-       par_struct.mat=1; 
+       par_vasca.mat=1; 
     case 'Titanio'
         out{12}=3;
-        par_struct.mat=3;
+        par_vasca.mat=3;
     case 'PE'
         out{12}=4;
-        par_struct.mat=4;
+        par_vasca.mat=4;
 end
 
 
-temp_out(13)=v2(trova_indice(v1,'costole in x [m]'));
+temp_out(13)=riga_valori(trova_indice(riga_nomi,'costole in x [m]'));
 out{13}=abate(temp_out(13));     
-par_struct.c_x= abate(v2(trova_indice(v1,'costole in x [m]')));
+par_vasca.c_x= abate(riga_valori(trova_indice(riga_nomi,'costole in x [m]')));
     
-temp_out(14)=v2(trova_indice(v1,'cerchiatura in y [m]'));
+temp_out(14)=riga_valori(trova_indice(riga_nomi,'cerchiatura in y [m]'));
 out{14}=abate(temp_out(14));  
-par_struct.c_y= abate(v2(trova_indice(v1,'cerchiatura in y [m]')));
+par_vasca.c_y= abate(riga_valori(trova_indice(riga_nomi,'cerchiatura in y [m]')));
 
-temp_out(15)=v2(trova_indice(v1,'costole in z [m]'));
+temp_out(15)=riga_valori(trova_indice(riga_nomi,'costole in z [m]'));
 out{15}=abate(temp_out(15)); 
-par_struct.c_z= abate(v2(trova_indice(v1,'costole in z [m]')));
+par_vasca.c_z= abate(riga_valori(trova_indice(riga_nomi,'costole in z [m]')));
 
-temp_out(19)=v2(trova_indice(v1,'posizioni aggiuntive in x [m]'));
+temp_out(19)=riga_valori(trova_indice(riga_nomi,'posizioni aggiuntive in x [m]'));
 out{19}=abate(temp_out(15)); 
-par_struct.ad_nd_x= abate(v2(trova_indice(v1,'posizioni aggiuntive in x [m]')));
+par_vasca.ad_nd_x= abate(riga_valori(trova_indice(riga_nomi,'posizioni aggiuntive in x [m]')));
 
-temp_out(20)=v2(trova_indice(v1,'posizioni aggiuntive in z [m]'));
+temp_out(20)=riga_valori(trova_indice(riga_nomi,'posizioni aggiuntive in z [m]'));
 out{20}=abate(temp_out(20)); 
-par_struct.ad_nd_z= abate(v2(trova_indice(v1,'posizioni aggiuntive in z [m]')));
-
-keyboard()
+par_vasca.ad_nd_z= abate(riga_valori(trova_indice(riga_nomi,'posizioni aggiuntive in z [m]')));
 
 end
 
+% trasforma una stringa con numeri separati da trattini in un'array
 function v=abate(c)
 
     if iscell(c)
