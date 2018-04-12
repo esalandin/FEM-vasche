@@ -12,7 +12,7 @@ out(8)=v2(trova_indice(v1,'Spessore Pareti [m]'));
 out(9)=v2(trova_indice(v1,'dimensione maggiore tubolare di rinforzo [m]'));
 out(10)=v2(trova_indice(v1,'dimensione minore tubolare di rinforzo [m]'));
 out(11)=v2(trova_indice(v1,'Spessore tubolare di rinforzo [m]'));
-out(16)=v2(trova_indice(v1,'densità liquido [kg/m3]'));
+out(16)=v2(trova_indice(v1,'densita liquido [kg/m3]'));
 temp_out(12)=v2(trova_indice(v1,'Materiale'));
     char12=char(temp_out{12});
 
