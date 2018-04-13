@@ -39,9 +39,9 @@ par_vasca.c_z= abate(riga_valori(trova_indice(riga_nomi,'costole in z [m]')));
 par_vasca.ad_nd_x= abate(riga_valori(trova_indice(riga_nomi,'posizioni aggiuntive in x [m]')));
 par_vasca.ad_nd_z= abate(riga_valori(trova_indice(riga_nomi,'posizioni aggiuntive in z [m]')));
 
-par_vasca.dx= riga_valori(trova_indice(riga_nomi,'dimensione target mesh x [m]'))) {};
-par_vasca.dy= riga_valori(trova_indice(riga_nomi,'dimensione target mesh y [m]'))) {};
-par_vasca.dz= riga_valori(trova_indice(riga_nomi,'dimensione target mesh z [m]'))) {};
+par_vasca.dx= riga_valori(trova_indice(riga_nomi,'dimensione target mesh x [m]')) {};
+par_vasca.dy= riga_valori(trova_indice(riga_nomi,'dimensione target mesh y [m]')) {};
+par_vasca.dz= riga_valori(trova_indice(riga_nomi,'dimensione target mesh z [m]')) {};
 
 end
 
