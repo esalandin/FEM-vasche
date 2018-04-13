@@ -4,13 +4,13 @@
 % pkg install C:/Users/sae/Downloads/io-2.4.10.tar.gz
 % pkg load io
 
-clear all
+clear
 close all
 pkg load io
 
 % global keepvalue keepvalue2
 
-[n,t,r]=xlsread('Input_vasca.xlsx');
+[n,t,r]=xlsread('Input_vasca_Z.xlsx');
 headers=r(1,:);
 righe_lette=r(:,1);
 

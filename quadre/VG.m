@@ -25,8 +25,15 @@ descr= parametri_vasca.descr;
 rho_l= parametri_vasca.rho_l;
 ad_nd_x= parametri_vasca.ad_nd_x;
 ad_nd_z= parametri_vasca.ad_nd_z;
+dx= parametri_vasca.dx;
+dy= parametri_vasca.dy;
+dz= parametri_vasca.dz;
 
 % apg_type e apg_pos non vengono letti dal file excel
+% valori di esempio:
+% apg_type= 'HEA100';
+% apg_pos= [0.06 1.16];
+
 apg_type= NaN;
 apg_pos= NaN;
 
@@ -41,9 +48,9 @@ offset_h2o=0;
 y_h2o=L_y-offset_h2o;
 
 % discretizzazione elementi
-dx=0.04;
-dy=0.04;
-dz=0.04;
+%dxdef=0.04;
+%dydef=0.04;
+%dzdef=0.04;
 
 % proprietà tubolare di rinforzo [m]
 T1=tt;
@@ -157,28 +164,29 @@ z=nodes(pos_z,dz);
 [nodes_x , nodes_y]=meshgrid(x,y);
 nodes_xy=[nodes_x(:) nodes_y(:)];
 % break
-nodes_xy=nodes_xy((nodes_xy(:,1)~=0).*(nodes_xy(:,1)~=L_x)==1,:);
+nodes_xy=nodes_xy((nodes_xy(:,1)~=0).*(nodes_xy(:,1)~=L_x)==1,:);   %elimina nodi di spigolo laterale xy
 
 [nodes_z , nodes_y]=meshgrid(z,y);
 nodes_zy=[nodes_z(:) nodes_y(:)];
 
 [nodes_x , nodes_z]=meshgrid(x,z);
 nodes_xz=[nodes_x(:) nodes_z(:)];
-logical_xz=(nodes_xz(:,1)~=0).*(nodes_xz(:,1)~=L_x).*(nodes_xz(:,2)~=0).*(nodes_xz(:,2)~=L_z);
+logical_xz=(nodes_xz(:,1)~=0).*(nodes_xz(:,1)~=L_x).*(nodes_xz(:,2)~=0).*(nodes_xz(:,2)~=L_z);   %elimina tutti nodi spigolo base
 nodes_xz=nodes_xz(logical_xz==1,:);
 
 
 
 % fondo
-ndlist1=[nodes_xz(:,1) zeros(numel(nodes_xz(:,1)),1) nodes_xz(:,2)];
-ndlist2=[nodes_xy(:,1) nodes_xy(:,2) zeros(numel(nodes_xy(:,1)),1)];
-ndlist3=[nodes_xy(:,1) nodes_xy(:,2) L_z*ones(numel(nodes_xy(:,1)),1)];
-ndlist4=[zeros(numel(nodes_zy(:,1)),1) nodes_zy(:,2) nodes_zy(:,1)];
-ndlist5=[L_x*ones(numel(nodes_zy(:,1)),1) nodes_zy(:,2) nodes_zy(:,1)];
+ndlist1=[nodes_xz(:,1) zeros(numel(nodes_xz(:,1)),1) nodes_xz(:,2)];   %inserisce colonna zeri tra coord x e z
+%pareti xy
+ndlist2=[nodes_xy(:,1) nodes_xy(:,2) zeros(numel(nodes_xy(:,1)),1)];    %inserisce colonna zeri dopo coord x e y
+ndlist3=[nodes_xy(:,1) nodes_xy(:,2) L_z*ones(numel(nodes_xy(:,1)),1)]; %inserisce colonna di Lz dopo coord x e y
+%pareti zy
+ndlist4=[zeros(numel(nodes_zy(:,1)),1) nodes_zy(:,2) nodes_zy(:,1)];     %inserisce colonna di zeri prima coord z e y
+ndlist5=[L_x*ones(numel(nodes_zy(:,1)),1) nodes_zy(:,2) nodes_zy(:,1)];  %inserisce colonna di Lx prima coord z e y
 
 ndlist=[ndlist1;ndlist2;ndlist3;ndlist4;ndlist5];
-ndlist=[(1:numel(ndlist(:,1)))' ndlist];
-
+ndlist=[(1:numel(ndlist(:,1)))' ndlist];      %aggiunge ID NODI
 
 
 % elementi fondo vasca
@@ -215,6 +223,8 @@ selecta=selecta(:,[1 2 3]);
 quad_lz=quadronode(selecta);
 quad_lz=[ones(numel(quad_lz(:,1)),1) 2*ones(numel(quad_lz(:,1)),1) quad_lz];
 
+% qui dentro ho una riga per ogni elemento quad, con coordinate nodi (4)
+% valore ordinata media (1) e all'inizio 1 1 o 1 2
 quad=[quad_fondo;quad_x0;quad_lx;quad_z0;quad_lz];
 
 
@@ -222,47 +232,48 @@ quad=[quad_fondo;quad_x0;quad_lx;quad_z0;quad_lz];
 % bordo
 % selecta=ndlist(ndlist(:,3)==L_y,:);
 % selecta_top_vasca=selecta;
-b_x0=ndlist(find((ndlist(:,3)==L_y).*(ndlist(:,2)==0)==1),2:end);
-b_x1=ndlist(find((ndlist(:,3)==L_y).*(ndlist(:,2)==L_x)==1),2:end);
-b_z0=ndlist(find((ndlist(:,3)==L_y).*(ndlist(:,4)==0)==1),2:end);
-% .*(ndlist(:,2)~=L_x).*(ndlist(:,2)~=0)
-b_z1=ndlist(find((ndlist(:,3)==L_y).*(ndlist(:,4)==L_z)==1),2:end);
+b_x0=ndlist(find((ndlist(:,3)==L_y).*(ndlist(:,2)==0)==1),2:end);   %trova nodi su bordo superiore x=0
+b_x1=ndlist(find((ndlist(:,3)==L_y).*(ndlist(:,2)==L_x)==1),2:end); %trova nodi su bordo superiore x=Lx
+b_z0=ndlist(find((ndlist(:,3)==L_y).*(ndlist(:,4)==0)==1),2:end); %trova nodi su bordo superiore z=0
+% .*(ndlist(:,2)~=L_x).*(ndlist(:,2)~=0) 
+b_z1=ndlist(find((ndlist(:,3)==L_y).*(ndlist(:,4)==L_z)==1),2:end);    %trova nodi su bordo superiore z=Lz
 % .*(ndlist(:,2)~=L_x).*(ndlist(:,2)~=0)
 
-D_l=(Lb/(round(Lb/dx))):(Lb/(round(Lb/dx))):Lb;
+D_l=(Lb/(round(Lb/dx))):(Lb/(round(Lb/dx))):Lb;   %calcola lato elementi bordo
 
-b_x0=sort([b_x0;b_x0(1:numel(D_l),1:2) -D_l';b_x0(1:numel(D_l),1:2) max(b_x0(:,3))+D_l']);
-b_x1=sort([b_x1;b_x1(1:numel(D_l),1:2) -D_l';b_x1(1:numel(D_l),1:2) max(b_x1(:,3))+D_l']);
+b_x0=sort([b_x0;b_x0(1:numel(D_l),1:2) -D_l';b_x0(1:numel(D_l),1:2) max(b_x0(:,3))+D_l']);  %aggiunge nodi bordo a x=0
+b_x1=sort([b_x1;b_x1(1:numel(D_l),1:2) -D_l';b_x1(1:numel(D_l),1:2) max(b_x1(:,3))+D_l']);  %aggiunge nodi bordo a x=Lx
 
 
 % bor_nod=[b_x0; b_x1; b_z0; b_z1];
 bor_nod=[];
 for ij=1:numel(D_l)
     Dl=D_l(ij);
-    bor_nod=[bor_nod;b_x0+repmat(Dl*[-1 0 0],numel(b_x0(:,1)),1)];
-    bor_nod=[bor_nod;b_x1+repmat(Dl*[1 0 0],numel(b_x1(:,1)),1)];
-    bor_nod=[bor_nod;b_z0+repmat(Dl*[0 0 -1],numel(b_z0(:,1)),1)];
-    bor_nod=[bor_nod;b_z1+repmat(Dl*[0 0 1],numel(b_z1(:,1)),1)];
-    PP_bor_nod=bor_nod;
+    bor_nod=[bor_nod;b_x0+repmat(Dl*[-1 0 0],numel(b_x0(:,1)),1)];   %aggiunge nodi fuori bordo a x=0
+    bor_nod=[bor_nod;b_x1+repmat(Dl*[1 0 0],numel(b_x1(:,1)),1)];    %aggiunge nodi fuori bordo a x=xL
+    bor_nod=[bor_nod;b_z0+repmat(Dl*[0 0 -1],numel(b_z0(:,1)),1)];    %aggiunge nodi fuori bordo a z=0
+    bor_nod=[bor_nod;b_z1+repmat(Dl*[0 0 1],numel(b_z1(:,1)),1)];     %aggiunge nodi fuori bordo a z=zL
+    PP_bor_nod=bor_nod;   %se vasca di PP no piega bordo
 end
-bor_nod=[bor_nod; bor_nod-repmat(Hb*[0 1 0],numel(bor_nod(:,1)),1)];
-bor_nod=[[numel(ndlist(:,1))+1:numel(ndlist(:,1))+numel(bor_nod(:,1))]' bor_nod];
-PP_bor_nod=[[numel(ndlist(:,1))+1:numel(ndlist(:,1))+numel(PP_bor_nod(:,1))]' PP_bor_nod];
+bor_nod=[bor_nod; bor_nod-repmat(Hb*[0 1 0],numel(bor_nod(:,1)),1)];  %aggiunge nodi piega su tutto bordo vasca
+bor_nod=[[numel(ndlist(:,1))+1:numel(ndlist(:,1))+numel(bor_nod(:,1))]' bor_nod]; %aggiunge ID partendo dagli ID di ndlist
+PP_bor_nod=[[numel(ndlist(:,1))+1:numel(ndlist(:,1))+numel(PP_bor_nod(:,1))]' PP_bor_nod]; %aggiunge ID partendo dagli ID di ndlist
 
-% cerchiature
+% cerchiature NB: i nodi e gli elementi sono gia stati generati per avere
+% nodi a quell'y
 if isnan(c_y)~=1
     mat_cer=cerchiatura(ndlist,c_y,0,L_x,0,L_z);    
 else
     mat_cer=[];
 end
-% costolature
+% costolature x (simile cerchiature)
 
 if isnan(c_x)~=1
     mat_cosx=costolatura_x(ndlist,c_x,0,max(c_y),0,L_z);
 else
     mat_cosx=[];
 end
-% costolature
+% costolature z
 if isnan(c_z)~=1
     mat_cosz=costolatura_z(ndlist,c_z,0,max(c_y),0,L_x);
 else
@@ -270,32 +281,32 @@ else
 end
 
 
-allbeam=[mat_cer mat_cosx mat_cosz ];
+allbeam=[mat_cer mat_cosx mat_cosz ];   %tutti i nodi travi costolature/cerchiature con relativi angoli per orientare assi principali
 
 
-if mat==2 || mat==3
+if mat==2 || mat==3 % aggiunge nodi cornice e se mat richiede anche cornice verticale
     ndlist=[ndlist; bor_nod];
-    cornice_xy1=ndlist(ndlist(:,3)==L_y,:);
-    cor_1=cornici(cornice_xy1,L_x,0,L_z,0);
+    cornice_xy1=ndlist(ndlist(:,3)==L_y,:); 
+    cor_1=cornici(cornice_xy1,L_x,0,L_z,0); % ID vertici elementi cornice orizzontale
 
     cor2=[];
     cornice_y=ndlist(ndlist(:,2)==max(ndlist(:,2)),[1 3 4]);
-    cor2=[cor2 ; quadronode(cornice_y)];
+    cor2=[cor2 ; quadronode(cornice_y)]; % ID vertici elementi cornice vert
 
     cornice_y=ndlist(ndlist(:,2)==min(ndlist(:,2)),[1 3 4]);
-    cor2=[cor2 ; quadronode(cornice_y)];
+    cor2=[cor2 ; quadronode(cornice_y)]; % ID vertici elementi cornice vert
 
     cornice_y=ndlist(ndlist(:,4)==max(ndlist(:,4)),[1 3 2]);
-    cor2=[cor2 ; quadronode(cornice_y)];
+    cor2=[cor2 ; quadronode(cornice_y)]; % ID vertici elementi cornice vert
 
     cornice_y=ndlist(ndlist(:,4)==min(ndlist(:,4)),[1 3 2]);
-    cor2=[cor2 ; quadronode(cornice_y)];
+    cor2=[cor2 ; quadronode(cornice_y)]; % ID vertici elementi cornice vert
     cor2=[ones(numel(cor2(:,1)),1) 3*ones(numel(cor2(:,1)),1) cor2];
 %             ndlist(ndlist(:,2)==min(ndlist(:,2)),:); 
 %             ndlist(ndlist(:,4)==max(ndlist(:,4)),:);
 %             ndlist(ndlist(:,4)==min(ndlist(:,4)),:) 
-    quad=[quad; cor_1; cor2]; 
-else
+    quad=[quad; cor_1; cor2];   %aggiunge elementi cornice verticale
+else   %caso senza cornice verticale
     ndlist=[ndlist; PP_bor_nod];
     cornice_xy1=ndlist(ndlist(:,3)==L_y,:);
     cor_1=cornici(cornice_xy1,L_x,0,L_z,0);
@@ -325,8 +336,8 @@ start=1;
 beam_prop_type=1;
 
 for ij=1:numel(allbeam)
-    temp_mat=allbeam{ij};
-    count=start:start+numel(temp_mat(:,1))-1;
+    temp_mat=allbeam{ij};       %selezione matrice costolex, z o cerchiatura
+    count=start:start+numel(temp_mat(:,1))-1;   %
     n=numel(count);
 %     if mat==1
 %         if ij==numel(allbeam)
@@ -340,35 +351,37 @@ for ij=1:numel(allbeam)
 end
 
 
-%% inserimento appoggio vasca 
+%% inserimento tipo appoggio vasca 
 if strcmp(apg_type,'HEA200')==1 || strcmp(apg_type,'HEA100')==1
-%     selezione nodi fondo
+%  selezione nodi fondo
 nodi_f=ndlist(ndlist(:,3)==0,:);
 
 for ij=1:numel(apg_pos)
 
 %     (ndlist(:,2)>=apg_pos(ij)-0.1)
 %     nodi_f_apg=nodi_f(find((nodi_f(:,2)<=apg_pos(ij)+0.1).*(nodi_f(:,2)>=apg_pos(ij)-0.1)==1),:);
-    index_nodi_apg=(nodi_f(:,2)<=apg_pos(ij)+0.1).*(nodi_f(:,2)>=apg_pos(ij)-0.1)==1;
+    index_nodi_apg=(nodi_f(:,2)<=apg_pos(ij)+0.1).*(nodi_f(:,2)>=apg_pos(ij)-0.1)==1;   %seleziona nodi su trave
     nodi_f_apg=nodi_f(index_nodi_apg,:);
-    row_nodi=nodi_f_apg(nodi_f_apg(:,4)==0,:);               
-    row_nodi_zm=nodi_f_apg(nodi_f_apg(:,4)==L_z,:);               
+    row_nodi=nodi_f_apg(nodi_f_apg(:,4)==0,:);               %seleziona nodi z=0
+    row_nodi_zm=nodi_f_apg(nodi_f_apg(:,4)==L_z,:);      %seleziona nodi a fine z=Lz         
     
     nodi_f_apg=nodi_f_apg(:,[1 2 4]);
     quadtra=quadronode(nodi_f_apg);
     quadtra=[ones(numel(quadtra(:,1)),1) 4*ones(numel(quadtra(:,1)),1) quadtra(:,4:-1:1) quadtra(:,5)];
-    quad=[quad; quadtra];
+    quad=[quad; quadtra];    %aggiunge nodi appoggio da vincolare
     
     newz=-dz:-dz:-0.500;        
     [new_nodix , new_nodiz]=meshgrid(row_nodi(:,2),newz);
     newcount=numel(ndlist(:,1))+1:1:(numel(ndlist(:,1))+numel(new_nodix(:)));        
-    add_nodes=[newcount' new_nodix(:) zeros(numel(new_nodix(:)),1) new_nodiz(:)];
+    add_nodes=[newcount' new_nodix(:) zeros(numel(new_nodix(:)),1) new_nodiz(:)];   %crea nodi appoggio fuori vasca
     
     ndlist=[ndlist; add_nodes];
     add_nodes=[add_nodes;row_nodi];    
     add_nodes=add_nodes(:,[1 2 4]);
     quadtra_zm=quadronode(add_nodes);
     quadtra_zm=[ones(numel(quadtra_zm(:,1)),1) 4*ones(numel(quadtra_zm(:,1)),1) quadtra_zm(:,4:-1:1) quadtra_zm(:,5)];
+    %ha generato nodi per appoggio  fuori (z=0) trave e li somma poi agli
+    %altri nodi (NB identificativo 1 4)
     quad=[quad; quadtra_zm];
     
     newz=L_z+dz:dz:L_z+0.500;        
@@ -382,6 +395,8 @@ for ij=1:numel(apg_pos)
     quadtra_zm=quadronode(add_nodes);
     quadtra_zm=[ones(numel(quadtra_zm(:,1)),1) 4*ones(numel(quadtra_zm(:,1)),1) quadtra_zm(:,4:-1:1) quadtra_zm(:,5)];
     quad=[quad; quadtra_zm];
+    %ha generato nodi per appoggio  fuori trave (z=Lz) e li somma poi agli
+    %altri nodi (NB identificativo 1 4)
 
 
 end
@@ -542,7 +557,7 @@ end
 for i=1:numel(quad(:,1));
 if quad(i,3)==3 || quad(i,3)==4
     if quad(i,3)==3
-    PlOf=-0.02;
+    PlOf=-0.00;                            %%%!!
     end
     if quad(i,3)==4
     PlOf=0.196/2+s_f/2;
@@ -651,7 +666,7 @@ end
     
  if strcmp(apg_type,'HEA200')==1  || strcmp(apg_type,'HEA100')==1  
      IxxHEA200=1/12*(0.2*0.196^3)-1/12*2*((0.2-0.005)/2*(0.196-2*0.01)^3);
-     st_eq=(IxxHEA200*3/0.2)^(1/3);
+     st_eq=(IxxHEA200*3/0.2)^(1/3);  %la trave di appoggio è idealizzata come un plate di inerzia equivalente
 % Proprietà per gli elementi del della trave di appoggio sottovasca    
     fprintf(pn,'%s %s %s\n','PlateShellProp','4','"\\Trave"');
     fprintf(pn,'%s %s\n','MaterialName','"mat"');
