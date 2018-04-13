@@ -46,23 +46,17 @@ par_vasca.dz= riga_valori(trova_indice(riga_nomi,'dimensione target mesh z [m]')
 end
 
 % trasforma una stringa con numeri separati da trattini in un'array
+% esempio '1-2.3 3,4' viene convertito in [1.0000   2.300   3.4000]
 function v=abate(c)
-
     if iscell(c)
-        c1=c{1};
-    end
-        if ischar(c1)
-            ch=char(c1);
-            indexes=[0 regexp(ch,'-')];          
-            for ij=1:numel(indexes)-1;
-                v(ij)=str2num(ch(indexes(ij)+1:indexes(ij+1)-1));
-            end
-            v(ij+1)=str2num(ch(indexes(end)+1:end));
-            if indexes==0
-                v_temp=char(c1);
-                v=str2num(v_temp);
-            end
-        else
-            v=c1;
-        end
-end
+        str= c{1};
+    else
+        str= c;
+    endif
+    str= strrep(str, ',', '.'); % sostituiamo le virgole con punto per non avere problemi di locale
+    str= strrep(str, '-', ' '); % sostituiamo - con spazio come separatore
+    [v, ok_conversione]= str2num(str);
+    if ~ok_conversione
+      disp(['conversione "' c '" fallita']);
+    endif
+endfunction
