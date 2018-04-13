@@ -3,13 +3,13 @@
 % ultima modifica: 17/10/2017
 % --------------------------------------------------
 
-clear all
+clear
 close all
 clc
 
 % global keepvalue keepvalue2
 
-[n,t,r]=xlsread('Input_vasca_CR.xlsx');
+[n,t,r]=xlsread('Input_vasca_Z.xlsx');
 headers=r(1,:);
 righe_lette=r(:,1);
 
@@ -36,7 +36,7 @@ for ij=1:n_vasche-1
 %     sb            default=spessore pareti
 %     B             par{9}
 %     D             par{10}        
-%     t             par{11}
+%     tt             par{11}
 %     c_x           par{13}
 %     c_y           par{14}    
 %     c_z           par{15}
@@ -47,7 +47,10 @@ for ij=1:n_vasche-1
 %     apg           par{17}
 %     pos_apg       par{18}   
 %     ad_nd_x       par{19}             nodi di interesse in aggiunta su asse x    
-%     ad_nd_z       par{20}             nodi di interesse in aggiunta su asse z    
+%     ad_nd_z       par{20}             nodi di interesse in aggiunta su asse z 
+%     dmesh_x       par{21}             dimensione media mesh x
+%     dmesh_y       par{22}             dimensione media mesh y
+%     dmesh_z       par{23}             dimensione media mesh z
 
     
 
@@ -57,5 +60,5 @@ for ij=1:n_vasche-1
 %     par{19}=
 %     par{20}=
     
-    VG(par{1},par{4},par{5},par{6},par{7},par{8},par{8},par{9},par{10},par{11},par{13},par{14},par{15},par{12},par{2},par{3},par{16},par{17},par{18},par{19},par{20})
+    VG(par{1},par{4},par{5},par{6},par{7},par{8},par{8},par{9},par{10},par{11},par{13},par{14},par{15},par{12},par{2},par{3},par{16},par{17},par{18},par{19},par{20},par{21},par{22},par{23})
 end
