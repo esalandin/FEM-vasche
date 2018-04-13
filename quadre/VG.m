@@ -23,19 +23,13 @@ mat= parametri_vasca.mat;
 path= parametri_vasca.path;
 descr= parametri_vasca.descr;
 rho_l= parametri_vasca.rho_l;
+apg_type= parametri_vasca.apg_type;
+apg_pos= parametri_vasca.apg_pos;
 ad_nd_x= parametri_vasca.ad_nd_x;
 ad_nd_z= parametri_vasca.ad_nd_z;
 dx= parametri_vasca.dx;
 dy= parametri_vasca.dy;
 dz= parametri_vasca.dz;
-
-% apg_type e apg_pos non vengono letti dal file excel
-% valori di esempio:
-% apg_type= 'HEA100';
-% apg_pos= [0.06 1.16];
-
-apg_type= NaN;
-apg_pos= NaN;
 
 % Per compensare il fatto che gli elementi shell vengono creati con i nodi sul piano medio, si "aumentano" 
 % fittiziamente le dimensioni della vasca per avere il reale interno vasca
