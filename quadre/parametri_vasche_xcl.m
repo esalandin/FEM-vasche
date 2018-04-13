@@ -49,14 +49,18 @@ end
 % esempio '1-2.3 3,4' viene convertito in [1.0000   2.300   3.4000]
 function v=abate(c)
     if iscell(c)
-        str= c{1};
+        content= c{1};
     else
-        str= c;
+        content= c;
     endif
-    str= strrep(str, ',', '.'); % sostituiamo le virgole con punto per non avere problemi di locale
-    str= strrep(str, '-', ' '); % sostituiamo - con spazio come separatore
-    [v, ok_conversione]= str2num(str);
-    if ~ok_conversione
-      disp(['conversione "' c '" fallita']);
+    if ischar(content)
+      str= strrep(content, ',', '.'); % sostituiamo le virgole con punto per non avere problemi di locale
+      str= strrep(str, '-', ' '); % sostituiamo - con spazio come separatore
+      [v, ok_conversione]= str2num(str);
+      if ~ok_conversione
+        disp(['conversione "' c '" fallita']);
+      endif
+    else
+      v=content;
     endif
 endfunction
